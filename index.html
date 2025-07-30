@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Sesiones Educativas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Gestor de Sesiones Educativas</h1>
+    </header>
+
+    <main>
+        <section class="class-management-section card">
+            <h2>Gestión de Clases</h2>
+            <div class="input-group">
+                <input type="text" id="newClassNameInput" placeholder="Nombre de la nueva clase">
+                <button id="createClassBtn">Crear Clase</button>
+            </div>
+            <div class="input-group">
+                <select id="classSelect">
+                    <option value="">Cargar o Crear Clase...</option>
+                </select>
+                <button id="loadClassBtn">Cargar Clase</button>
+            </div>
+            <h3 id="currentClassName">Ninguna Clase Cargada</h3>
+        </section>
+
+        <section class="students-management-section card">
+            <h2 id="currentClassStudentsTitle">Alumnos de la Sesión Actual</h2>
+            <div class="input-group">
+                <input type="text" id="studentNameInput" placeholder="Nombre del alumno">
+                <button id="addStudentBtn">Añadir Alumno</button>
+            </div>
+            <ul id="studentList">
+                <li class="initial-message">No hay alumnos en esta clase aún.</li>
+            </ul>
+            <div class="button-group">
+                <button id="resetPointsBtn">Reiniciar Puntos de Sesión</button>
+                <button id="duplicateSessionBtn">Duplicar Sesión (Mañana)</button>
+                <button id="endSessionBtn">Finalizar Sesión</button>
+            </div>
+        </section>
+
+        <section class="groups-section card">
+            <h2>Generador de Grupos</h2>
+            <div class="input-group">
+                <input type="number" id="numGroupsInput" placeholder="Número de grupos" min="2">
+                <button id="generateGroupsBtn">Generar Grupos</button>
+            </div>
+            <div id="groupsDisplay" class="groups-container">
+                <p class="initial-message">Los grupos aparecerán aquí.</p>
+            </div>
+        </section>
+
+        <section class="game-finder-section card">
+            <h2>Buscador de Juegos</h2>
+            <div class="input-group">
+                <label for="gameCategorySelect">Seleccionar Categoría:</label>
+                <select id="gameCategorySelect">
+                    <option value="">Todas las Categorías</option>
+                    <option value="Lateralidad">Lateralidad</option>
+                    <option value="Esquema Corporal">Esquema Corporal</option>
+                    <option value="Fuerza">Fuerza</option>
+                    <option value="Velocidad">Velocidad</option>
+                    <option value="Juegos Populares">Juegos Populares</option>
+                    <option value="Coordinación">Coordinación</option>
+                    <option value="Equilibrio">Equilibrio</option>
+                    <option value="Juegos Cooperativos">Juegos Cooperativos</option>
+                    <option value="Vuelta a la Calma">Vuelta a la Calma</option>
+                </select>
+            </div>
+            <div id="gameResultsDisplay" class="game-results-container">
+                <p class="initial-message">Selecciona una categoría para ver los juegos.</p>
+            </div>
+            <h3>Juegos Seleccionados para la Sesión Actual:</h3>
+            <ul id="selectedGamesList">
+                <li class="no-games-selected">No hay juegos seleccionados aún.</li>
+            </ul>
+        </section>
+
+        <section class="timer-section card">
+            <h2>Temporizador</h2>
+            <div class="input-group timer-inputs">
+                <input type="number" id="timerMinutesInput" placeholder="Minutos" min="0">
+                <input type="number" id="timerSecondsInput" placeholder="Segundos" min="0" max="59">
+            </div>
+            <div class="button-group">
+                <button id="startTimerBtn">Iniciar</button>
+                <button id="pauseTimerBtn" disabled>Pausar</button>
+                <button id="resetTimerBtn">Reiniciar</button>
+            </div>
+            <div class="timer-display-container">
+                <div id="timerBall"></div>
+                <div id="timerDisplay">00:00</div>
+            </div>
+            <audio id="boomSound" src="boom.mp3" preload="auto"></audio>
+        </section>
+
+        <section class="history-section card">
+            <h2>Historial de Sesiones</h2>
+            <div id="sessionHistoryDisplay" class="session-history-container">
+                <p class="initial-message">Aquí aparecerán tus sesiones guardadas.</p>
+            </div>
+        </section>
+    </main>
+
+    <div id="feedbackModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Feedback de la Sesión</h2>
+            <div class="feedback-grid">
+                <div class="feedback-category" data-category="engagement">
+                    <h3>Compromiso</h3>
+                    <div class="emojis">
+                        <span class="emoji" data-value="1">😡</span>
+                        <span class="emoji" data-value="2">🙁</span>
+                        <span class="emoji" data-value="3">😐</span>
+                        <span class="emoji" data-value="4">🙂</span>
+                        <span class="emoji" data-value="5">😀</span>
+                    </div>
+                </div>
+                <div class="feedback-category" data-category="discipline">
+                    <h3>Disciplina</h3>
+                    <div class="emojis">
+                        <span class="emoji" data-value="1">😡</span>
+                        <span class="emoji" data-value="2">🙁</span>
+                        <span class="emoji" data-value="3">😐</span>
+                        <span class="emoji" data-value="4">🙂</span>
+                        <span class="emoji" data-value="5">😀</span>
+                    </div>
+                </div>
+                <div class="feedback-category" data-category="enjoyment">
+                    <h3>Disfrute</h3>
+                    <div class="emojis">
+                        <span class="emoji" data-value="1">😡</span>
+                        <span class="emoji" data-value="2">🙁</span>
+                        <span class="emoji" data-value="3">😐</span>
+                        <span class="emoji" data-value="4">🙂</span>
+                        <span class="emoji" data-value="5">😀</span>
+                    </div>
+                </div>
+                <div class="feedback-category" data-category="achievement">
+                    <h3>Logro de Objetivos</h3>
+                    <div class="emojis">
+                        <span class="emoji" data-value="1">😡</span>
+                        <span class="emoji" data-value="2">🙁</span>
+                        <span class="emoji" data-value="3">😐</span>
+                        <span class="emoji" data-value="4">🙂</span>
+                        <span class="emoji" data-value="5">😀</span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="teacherNotes">Notas del Profesor:</label>
+                <textarea id="teacherNotes" rows="4" placeholder="Añade tus observaciones aquí..."></textarea>
+            </div>
+            <button id="submitFeedbackBtnModal">Guardar Feedback y Finalizar</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puntuaciones Acumuladas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-item">Sesión Actual</a>
+        <a href="stats.html" class="nav-item active">Puntuaciones Acumuladas</a>
+        <a href="session_history.html" class="nav-item">Historial de Sesiones</a>
+    </nav>
+
+    <div class="container">
+        <h1>Puntuaciones Acumuladas de Alumnos</h1>
+        <p>Aquí puedes ver el total de puntos de cada alumno a lo largo de todas las sesiones.</p>
+
+        <div class="stats-controls">
+            <button id="resetAllTimePointsBtn">Reiniciar TODOS los Puntos Acumulados</button>
+            <button id="clearAllStudentsBtn">Borrar TODOS los Alumnos (y sus puntos)</button>
+        </div>
+
+        <div class="student-stats-list">
+            <ul id="allTimeStudentList">
+                </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const allTimeStudentListUl = document.getElementById('allTimeStudentList');
+            const resetAllTimePointsBtn = document.getElementById('resetAllTimePointsBtn');
+            const clearAllStudentsBtn = document.getElementById('clearAllStudentsBtn');
+
+            let allTimeStudents = []; // Alumnos con puntos acumulados
+
+            loadAllTimeStudents();
+            renderAllTimeStudentList();
+
+            function saveAllTimeStudents() {
+                localStorage.setItem('allTimeStudents', JSON.stringify(allTimeStudents));
+            }
+
+            function loadAllTimeStudents() {
+                const storedAllTimeStudents = localStorage.getItem('allTimeStudents');
+                if (storedAllTimeStudents) {
+                    allTimeStudents = JSON.parse(storedAllTimeStudents);
+                }
+            }
+
+            function renderAllTimeStudentList() {
+                allTimeStudentListUl.innerHTML = '';
+                if (allTimeStudents.length === 0) {
+                    allTimeStudentListUl.innerHTML = '<p style="text-align: center; color: #555;">No hay alumnos con puntuaciones acumuladas aún.</p>';
+                    return;
+                }
+                // Sort by score descending
+                const sortedStudents = [...allTimeStudents].sort((a, b) => b.totalScore - a.totalScore);
+
+                sortedStudents.forEach(student => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <span class="student-name">${student.name}</span>
+                        <span class="points-display">${student.totalScore} Pts</span>
+                        <button data-id="${student.id}" class="remove-all-time-student-btn">Eliminar</button>
+                    `;
+                    allTimeStudentListUl.appendChild(listItem);
+                });
+                addRemoveAllTimeStudentEventListeners();
+            }
+
+            function addRemoveAllTimeStudentEventListeners() {
+                document.querySelectorAll('.remove-all-time-student-btn').forEach(button => {
+                    button.onclick = (event) => {
+                        const studentId = event.target.dataset.id;
+                        if (confirm(`¿Estás seguro de que quieres eliminar a este alumno y sus puntos acumulados?`)) {
+                            allTimeStudents = allTimeStudents.filter(s => s.id !== studentId);
+                            saveAllTimeStudents();
+                            renderAllTimeStudentList();
+                            alert('Alumno eliminado.');
+                        }
+                    };
+                });
+            }
+
+            resetAllTimePointsBtn.addEventListener('click', () => {
+                if (confirm('¿Estás seguro de que quieres reiniciar los puntos ACUMULADOS de TODOS los alumnos a 0? La lista de alumnos se mantendrá.')) {
+                    allTimeStudents.forEach(student => student.totalScore = 0);
+                    saveAllTimeStudents();
+                    renderAllTimeStudentList();
+                    alert('Puntos acumulados reiniciados correctamente.');
+                }
+            });
+
+            clearAllStudentsBtn.addEventListener('click', () => {
+                if (confirm('¡ADVERTENCIA! ¿Estás seguro de que quieres BORRAR a TODOS los alumnos y sus puntos acumulados de forma PERMANENTE? Esta acción no se puede deshacer.')) {
+                    allTimeStudents = [];
+                    // Also clear current session students to avoid inconsistency
+                    localStorage.removeItem('currentSessionStudents');
+                    saveAllTimeStudents();
+                    renderAllTimeStudentList();
+                    alert('Todos los alumnos y sus puntos han sido borrados permanentemente.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

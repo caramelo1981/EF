@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Sesiones</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-item">Sesión Actual</a>
+        <a href="stats.html" class="nav-item">Puntuaciones Acumuladas</a>
+        <a href="session_history.html" class="nav-item active">Historial de Sesiones</a>
+    </nav>
+
+    <div class="container">
+        <h1>Historial de Sesiones</h1>
+        <p>Aquí puedes revisar el feedback de las sesiones anteriores.</p>
+
+        <div class="history-controls">
+            <button id="clearHistoryBtn">Borrar Todo el Historial</button>
+        </div>
+
+        <div id="sessionsHistoryDisplay">
+            </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sessionsHistoryDisplayDiv = document.getElementById('sessionsHistoryDisplay');
+            const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+
+            let sessionsHistory = [];
+
+            loadSessionsHistory();
+            renderSessionsHistory();
+
+            function loadSessionsHistory() {
+                const storedSessionsHistory = localStorage.getItem('sessionsHistory');
+                if (storedSessionsHistory) {
+                    sessionsHistory = JSON.parse(storedSessionsHistory);
+                }
+            }
+
+            function renderSessionsHistory() {
+                sessionsHistoryDisplayDiv.innerHTML = '';
+                if (sessionsHistory.length === 0) {
+                    sessionsHistoryDisplayDiv.innerHTML = '<p style="text-align: center; color: #555;">No hay historial de sesiones guardado aún.</p>';
+                    return;
+                }
+
+                // Reverse to show most recent first
+                const reversedHistory = [...sessionsHistory].reverse();
+
+                reversedHistory.forEach((session, index) => {
+                    const sessionCard = document.createElement('div');
+                    sessionCard.classList.add('session-card', 'section'); // Reusing 'section' class for styling
+                    sessionCard.style.borderLeftColor = '#9b59b6'; // Matching feedback section color
+
+                    const valueToDescription = {
+                        4: 'Muy Sonriente (Excelente)',
+                        3: 'Sonriente (Bien)',
+                        2: 'Normal',
+                        1: 'Triste (Necesita mejorar)'
+                    };
+
+                    let studentsSummary = '';
+                    if (session.studentsAtSession && session.studentsAtSession.length > 0) {
+                        studentsSummary = '<p><strong>Alumnos en esta sesión y sus puntos:</strong></p><ul>';
+                        session.studentsAtSession.forEach(s => {
+                            studentsSummary += `<li>${s.name}: ${s.score} Pts</li>`;
+                        });
+                        studentsSummary += '</ul>';
+                    } else {
+                         studentsSummary = '<p><em>No hay datos de alumnos guardados para esta sesión.</em></p>';
+                    }
+
+                    sessionCard.innerHTML = `
+                        <h2>Sesión del ${session.date}</h2>
+                        <p><strong>Compromiso y Participación:</strong> ${valueToDescription[session.engagement]}</p>
+                        <p><strong>Disciplina y Comportamiento:</strong> ${valueToDescription[session.discipline]}</p>
+                        <p><strong>Disfrute General:</strong> ${valueToDescription[session.enjoyment]}</p>
+                        <p><strong>Logro de Objetivos:</strong> ${valueToDescription[session.achievement]}</p>
+                        ${session.notes ? `<p><strong>Notas del Profesor:</strong> ${session.notes}</p>` : '<p><em>No hay notas del profesor.</em></p>'}
+                        ${studentsSummary}
+                        <button data-index="${index}" class="remove-session-btn">Eliminar Sesión</button>
+                    `;
+                    sessionsHistoryDisplayDiv.appendChild(sessionCard);
+                });
+                 addRemoveSessionEventListeners();
+            }
+
+            function addRemoveSessionEventListeners() {
+                document.querySelectorAll('.remove-session-btn').forEach(button => {
+                    button.onclick = (event) => {
+                        const indexToRemove = parseInt(event.target.dataset.index, 10);
+                        // Adjust index because we reversed the display
+                        const originalIndex = sessionsHistory.length - 1 - indexToRemove;
+                        if (confirm(`¿Estás seguro de que quieres eliminar esta sesión del historial?`)) {
+                            sessionsHistory.splice(originalIndex, 1);
+                            localStorage.setItem('sessionsHistory', JSON.stringify(sessionsHistory));
+                            renderSessionsHistory();
+                            alert('Sesión eliminada del historial.');
+                        }
+                    };
+                });
+            }
+
+            clearHistoryBtn.addEventListener('click', () => {
+                if (confirm('¡ADVERTENCIA! ¿Estás seguro de que quieres BORRAR TODO el historial de sesiones de forma PERMANENTE? Esta acción no se puede deshacer.')) {
+                    sessionsHistory = [];
+                    localStorage.removeItem('sessionsHistory');
+                    renderSessionsHistory();
+                    alert('Todo el historial de sesiones ha sido borrado permanentemente.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

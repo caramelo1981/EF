@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Grupos y Puntuación</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Clase de Educación Física</h1>
+
+        <div class="section">
+            <h2>Lista de Alumnos</h2>
+            <div class="input-group">
+                <input type="text" id="studentNameInput" placeholder="Nombre del alumno">
+                <button id="addStudentBtn">Añadir Alumno</button>
+            </div>
+            <ul id="studentList">
+                </ul>
+        </div>
+
+        <div class="section">
+            <h2>Generar Grupos</h2>
+            <div class="input-group">
+                <input type="number" id="numGroupsInput" placeholder="Número de grupos" min="2">
+                <button id="generateGroupsBtn">Generar Grupos</button>
+            </div>
+            <div id="groupsDisplay">
+                </div>
+        </div>
+
+        <div class="section game-finder-section">
+            <h2>Buscador de Juegos</h2>
+            <div class="input-group">
+                <input type="text" id="gameSearchInput" placeholder="Buscar juego (ej: balón, relevos)">
+                <button id="searchGameBtn">Buscar Juego</button>
+            </div>
+            <div id="gameResultsDisplay">
+                <p class="initial-message">Escribe una palabra clave para buscar juegos.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Control de Puntuación</h2>
+            <p>Por cada juego bien hecho (4 juegos por sesión): <strong class="points-info">2.5 puntos</strong></p>
+            <button id="resetPointsBtn">Reiniciar Puntos de la Sesión</button>
+        </div>
+
+        <div class="section timer-section">
+            <h2>Temporizador</h2>
+            <div class="timer-controls">
+                <input type="number" id="timerMinutesInput" placeholder="Minutos" min="0">
+                <input type="number" id="timerSecondsInput" placeholder="Segundos" min="0" max="59">
+                <button id="startTimerBtn">Iniciar</button>
+                <button id="pauseTimerBtn">Pausar</button>
+                <button id="resetTimerBtn">Reiniciar</button>
+            </div>
+            <div id="timerDisplay">00:00</div>
+        </div>
+
+        <div class="section feedback-section">
+            <h2>Feedback de la Sesión</h2>
+            <div class="feedback-categories">
+                <div class="feedback-category" data-category="engagement">
+                    <h3>Compromiso y Participación</h3>
+                    <div class="emojis">
+                        <i class="far fa-laugh-beam" data-value="4" title="Excelente"></i>
+                        <i class="far fa-smile" data-value="3" title="Bien"></i>
+                        <i class="far fa-meh" data-value="2" title="Normal"></i>
+                        <i class="far fa-frown" data-value="1" title="Necesita mejorar"></i>
+                    </div>
+                </div>
+                <div class="feedback-category" data-category="discipline">
+                    <h3>Disciplina y Comportamiento</h3>
+                    <div class="emojis">
+                        <i class="far fa-laugh-beam" data-value="4" title="Excelente"></i>
+                        <i class="far fa-smile" data-value="3" title="Bien"></i>
+                        <i class="far fa-meh" data-value="2" title="Normal"></i>
+                        <i class="far fa-frown" data-value="1" title="Necesita mejorar"></i>
+                    </div>
+                </div>
+                <div class="feedback-category" data-category="enjoyment">
+                    <h3>Disfrute General</h3>
+                    <div class="emojis">
+                        <i class="far fa-laugh-beam" data-value="4" title="Excelente"></i>
+                        <i class="far fa-smile" data-value="3" title="Bien"></i>
+                        <i class="far fa-meh" data-value="2" title="Normal"></i>
+                        <i class="far fa-frown" data-value="1" title="Necesita mejorar"></i>
+                    </div>
+                </div>
+                <div class="feedback-category" data-category="achievement">
+                    <h3>Logro de Objetivos</h3>
+                    <div class="emojis">
+                        <i class="far fa-laugh-beam" data-value="4" title="Excelente"></i>
+                        <i class="far fa-smile" data-value="3" title="Bien"></i>
+                        <i class="far fa-meh" data-value="2" title="Normal"></i>
+                        <i class="far fa-frown" data-value="1" title="Necesita mejorar"></i>
+                    </div>
+                </div>
+            </div>
+            <button id="submitFeedbackBtn">Enviar Feedback</button>
+            <div id="feedbackSummary"></div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
